@@ -1,0 +1,383 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{longtable}
+
+\geometry{a4paper, margin=2.5cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+% Configuration des couleurs
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{primary}{rgb}{0.2,0.4,0.8}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    language=Python
+}
+
+\lstset{style=mystyle}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Projet Fin de Semestre}
+\fancyhead[R]{Applications Réparties}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\today}
+
+\title{
+    \vspace{2cm}
+    \Huge\textbf{Plateforme Distribuée de Détection}\\ 
+    \Huge\textbf{d'Emails de Phishing}
+    \vspace{0.5cm}
+}
+\author{
+    \large\textbf{Nouratemsamani1}\\
+    \large Module: Applications Réparties et Cybersécurité\\
+    \vspace{0.5cm}
+    \large Université\\
+    \large Année Universitaire 2025-2026
+}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\newpage
+\tableofcontents
+\thispagestyle{empty}
+
+\newpage
+\setcounter{page}{1}
+
+\section{Introduction}
+
+\subsection{Contexte}
+Les campagnes de phishing assistées par intelligence artificielle constituent l'une des menaces les plus critiques dans le paysage de la cybersécurité actuelle. Chaque jour, les organisations reçoivent des milliers d'emails suspects contenant des faux liens, des demandes urgentes ou des usurpations d'identité.
+
+\subsection{Objectifs}
+Ce projet vise à développer une plateforme distribuée permettant de :
+\begin{itemize}
+    \item Authentifier les utilisateurs avec gestion des rôles
+    \item Soumettre et analyser des emails suspects
+    \item Attribuer un score de risque (Faible/Moyen/Élevé)
+    \item Consulter l'historique des signalements
+    \item Assurer la traçabilité via des logs d'audit
+\end{itemize}
+
+\subsection{Architecture Globale}
+L'architecture retenue est une architecture microservices :
+
+\begin{verbatim}
+┌─────────────┐     ┌─────────────┐     ┌─────────────────┐
+│   Client    │────▶│   Gateway   │────▶│  Auth Service   │
+│  (CLI/Web)  │     │  (Port 8000) │     │   (Port 8001)   │
+└─────────────┘     └─────────────┘     └─────────────────┘
+                            │
+                            ▼
+                    ┌─────────────┐
+                    │  Analysis   │
+                    │  (Port 8002)│
+                    └─────────────┘
+                            │
+                            ▼
+                    ┌─────────────┐
+                    │   Audit     │
+                    │  (Port 8003)│
+                    └─────────────┘
+\end{verbatim}
+
+\section{Technologies Utilisées}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Technologie} & \textbf{Version} & \textbf{Usage} \\
+\hline
+Python & 3.11 & Langage principal \\
+Flask & 2.3.0 & Framework API REST \\
+Requests & 2.31.0 & Communication HTTP \\
+JWT & - & Authentification \\
+JSON & - & Échange de données \\
+\hline
+\end{tabular}
+\caption{Technologies utilisées}
+\end{table}
+
+\section{Description des Services}
+
+\subsection{Auth Service (Port 8001)}
+Service responsable de l'authentification :
+\begin{itemize}
+    \item Vérification des identifiants
+    \item Génération de tokens JWT
+    \item Validation des tokens
+    \item Gestion des rôles (admin/analyst)
+\end{itemize}
+
+\subsection{Analysis Service (Port 8002)}
+Service d'analyse heuristique :
+\begin{itemize}
+    \item Détection de mots-clés suspects
+    \item Extraction et analyse d'URLs
+    \item Calcul du score de risque (0-100)
+    \item Génération d'explications textuelles
+\end{itemize}
+
+\subsection{API Gateway (Port 8000)}
+Point d'entrée unique orchestrant les communications :
+\begin{itemize}
+    \item Routage des requêtes
+    \item Validation des tokens
+    \item Timeout et gestion d'erreurs
+    \item Coordination inter-services
+\end{itemize}
+
+\subsection{Audit Service (Port 8003)}
+Service de journalisation :
+\begin{itemize}
+    \item Enregistrement des événements sensibles
+    \item Stockage des logs structurés
+    \item Consultation des historiques
+\end{itemize}
+
+\section{Sécurité Implémentée}
+
+\subsection{Tableau des Menaces et Contre-Mesures}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3cm}|p{5cm}|p{4cm}|}
+\hline
+\textbf{Menace} & \textbf{Contre-mesure} & \textbf{Localisation} \\
+\hline
+Injection & Validation stricte des entrées & Gateway \\
+\hline
+Accès non autorisé & Tokens JWT + vérification rôles & Tous services \\
+\hline
+Attaque DoS & Limite taille entrées (50KB) & Gateway \\
+\hline
+Fuite données & Hash des mots de passe & Auth Service \\
+\hline
+Logs sensibles & Pas de tokens dans les logs & Audit Service \\
+\hline
+\end{tabular}
+\caption{Analyse des risques et protections}
+\end{table}
+
+\subsection{Authentification JWT}
+
+\begin{lstlisting}[caption=Génération de token JWT]
+token = jwt.encode({
+    'username': username,
+    'role': users[username]['role'],
+    'exp': datetime.utcnow() + timedelta(hours=24)
+}, SECRET_KEY, algorithm='HS256')
+\end{lstlisting}
+
+\subsection{Validation des Entrées}
+
+\begin{lstlisting}[caption=Validation stricte]
+# Limitation de taille
+if len(data.get('content', '')) > MAX_SUBMISSION_SIZE:
+    return jsonify({'error': 'Contenu trop long'}), 400
+
+# Nettoyage des entrées
+data['sender'] = data['sender'][:200]
+data['subject'] = data['subject'][:200]
+\end{lstlisting}
+
+\section{Moteur d'Analyse Heuristique}
+
+\subsection{Règles de Détection}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Règle} & \textbf{Condition} & \textbf{Score} \\
+\hline
+Mots suspects & urgent, verify, password, click & +10/mot \\
+URLs détectées & http:// ou https:// & +15 \\
+Points d'exclamation & Plus de 3 & +10 \\
+Usurpation & Marque + action urgente & +25 \\
+\hline
+\end{tabular}
+\caption{Règles d'analyse heuristique}
+\end{table}
+
+\subsection{Formule de Score}
+
+\begin{lstlisting}[caption=Calcul du score]
+if score >= 60:
+    risk = "ÉLEVÉ"
+elif score >= 30:
+    risk = "MOYEN"
+else:
+    risk = "FAIBLE"
+\end{lstlisting}
+
+\section{Tests et Validation}
+
+\subsection{Tests d'Authentification}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Utilisateur} & \textbf{Mot de passe} & \textbf{Rôle} & \textbf{Résultat} \\
+\hline
+alice & password123 & admin & ✅ Succès \\
+bob & password123 & analyst & ✅ Succès \\
+alice & wrong & - & ❌ Échec \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Tests d'Analyse}
+
+\textbf{Email suspect (Score ÉLEVÉ)} :
+\begin{verbatim}
+Expéditeur: security@paypal.com
+Objet: URGENT: Votre compte va être suspendu
+Contenu: Cliquez ici http://fake.com pour vérifier!!!
+
+Résultat: Score 65 - ÉLEVÉ
+Raisons: 
+  - Mot suspect: urgent
+  - Mot suspect: verify
+  - URL détectée
+  - Trop d'exclamations
+\end{verbatim}
+
+\section{Démonstration}
+
+\subsection{Installation}
+
+\begin{lstlisting}[caption=Commandes d'installation]
+pip install flask requests PyJWT
+python auth.py          # Terminal 1
+python analysis.py      # Terminal 2
+python audit.py         # Terminal 3
+python gateway.py       # Terminal 4
+python client.py        # Terminal 5
+\end{lstlisting}
+
+\subsection{Exemple d'Utilisation}
+
+\begin{verbatim}
+🔒 PLATEFORME DE DÉTECTION PHISHING
+
+=== AUTHENTIFICATION ===
+Utilisateur: alice
+Mot de passe: 
+
+✓ Connecté en tant que alice (admin)
+
+Choix: 1
+
+=== SOUMETTRE UN EMAIL ===
+Expéditeur: security@paypal.com
+Objet: URGENT: Compte suspendu
+
+✓ Signalement #1 créé!
+  Risque: ÉLEVÉ (score: 55)
+  Raisons:
+    - Mot suspect: urgent
+    - Mot suspect: verify
+    - Contient des URLs
+\end{verbatim}
+
+\section{Bonus Implémentés}
+
+\begin{itemize}
+    \item \textbf{Tableau de bord web} : Interface graphique avec Flask (http://localhost:5000)
+    \item \textbf{Gestion des timeouts} : Protection contre les services lents
+    \item \textbf{Logs structurés} : Journalisation au format JSON
+    \item \textbf{Validation stricte} : Protection contre les injections
+\end{itemize}
+
+\section{Conclusion}
+
+Le projet a permis de développer une plateforme distribuée fonctionnelle répondant à l'ensemble des exigences :
+
+\begin{itemize}
+    \item ✅ Architecture microservices avec 4 composants communicants
+    \item ✅ Authentification sécurisée avec JWT et gestion des rôles
+    \item ✅ Analyse heuristique des emails avec scoring
+    \item ✅ Interface utilisateur (CLI + Web)
+    \item ✅ Logs d'audit et traçabilité
+    \item ✅ Gestion robuste des erreurs et timeouts
+\end{itemize}
+
+\section{Annexes}
+
+\subsection{Arborescence du Projet}
+
+\begin{verbatim}
+phishing_platform/
+├── auth.py              # Service d'authentification
+├── analysis.py          # Service d'analyse
+├── audit.py             # Service d'audit
+├── gateway.py           # API Gateway
+├── client.py            # Client CLI
+├── web_dashboard.py     # Interface web
+├── storage/
+│   ├── users.json
+│   ├── submissions.json
+│   └── audit_logs.json
+└── requirements.txt
+\end{verbatim}
+
+\subsection{Dépendances}
+
+\begin{lstlisting}[caption=requirements.txt]
+flask==2.3.0
+flask-cors==4.0.0
+requests==2.31.0
+pyro5==5.15
+werkzeug==2.3.0
+\end{lstlisting}
+
+\section*{Remerciements}
+Merci à l'équipe pédagogique pour ce projet enrichissant.
+
+\vspace{1cm}
+
+\begin{flushright}
+\textit{Fait le \today}
+\end{flushright}
+
+\end{document}
