@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "submitted_by": "alice",
+    "timestamp": "2026-06-12T22:57:40.776509",
+    "sender": "security@paypal.com",
+    "subject": "URGENT: Votre compte va \u00eatre suspendu",
+    "content": "Cher client,\nNous avons d\u00e9tect\u00e9 une activit\u00e9 inhabituelle sur votre compte.\nCliquez ici pour v\u00e9rifier: http://fake-paypal.com/verify\nVotre compte sera suspendu dans 24h si vous ne confirmez pas!",
+    "analysis": {
+      "reasons": [
+        "Mot suspect: verify",
+        "Contient des URLs"
+      ],
+      "risk_level": "FAIBLE",
+      "risk_score": 25
+    }
+  }
+]

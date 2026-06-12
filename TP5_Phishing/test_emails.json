@@ -1,0 +1,17 @@
+[
+  {
+    "sender": "security@paypal.com",
+    "subject": "URGENT: Votre compte va être suspendu",
+    "content": "Cher client, Nous avons détecté une activité inhabituelle. Cliquez ici pour vérifier votre compte immédiatement: http://paypal-secure-login.xyz/verify Votre compte sera suspendu dans 24h si aucune action n'est prise."
+  },
+  {
+    "sender": "info@company.com",
+    "subject": "Re: Demande d'information",
+    "content": "Bonjour, Suite à votre demande, veuillez trouver ci-joint les documents demandés. Cordialement, L'équipe"
+  },
+  {
+    "sender": "winner@lottery-intl.com",
+    "subject": "FÉLICITATIONS! Vous avez gagné 1,000,000$!",
+    "content": "CONGRATULATIONS!!! Vous êtes le millionième visiteur! Cliquez ici: http://bit.ly/claim-prize pour réclamer votre prix. Offre valable 24h seulement!"
+  }
+]
