@@ -1,0 +1,14 @@
+// document.proto - Schéma Protocol Buffers
+syntax = "proto3";
+
+package demo;
+
+// Message Document
+message Document {
+    int32 id = 1;              // Identifiant unique
+    string title = 2;          // Titre du document
+    string author = 3;         // Auteur
+    repeated string tags = 4;  // Liste de tags (v2)
+    string classification = 5; // Classification (v2)
+    optional int32 priority = 6; // Priorité (v3 - démonstration)
+}
